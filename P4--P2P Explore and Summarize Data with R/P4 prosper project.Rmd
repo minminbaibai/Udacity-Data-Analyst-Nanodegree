@@ -1,0 +1,554 @@
+Exploring Prosper Loan (P2P) by Min Lu
+========================================================
+
+# Introduction:
+
+Prosper is a P2P marketplace providing person-to-person lending utilizing alisting and bidding process to get competitive rates for loans.
+
+In this project, I will use R and data anaylst skills to explore relationships between multiple variables.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+library(ggthemes)
+library(dplyr)
+library(gridExtra)
+library(tidyr)
+library(MASS)
+library(scales)
+library(GGally)
+library(ggplot2)
+```
+
+```{r echo=FALSE}
+# Load the Data
+P2P<-read.csv("prosperLoanData.csv")
+
+```
+
+# Explore Dataset
+```{r echo=FALSE}
+str(P2P)
+names(P2P)
+nrow(P2P)
+ncol(P2P)
+summary(P2P)
+#After we overview the dataset, I find it contains more than 11000 rows and 81 columns. After go over the Prosper.com website, I decide to only choose 15 varaibles to continue my reserch.
+```
+
+# Univariate Plots Section
+```{r echo=FALSE, Univariate_Plots}
+#1. Distribution of loan by prosper score.
+summary(P2P$ProsperScore)
+ggplot(data = P2P, aes(x = ProsperScore)) + 
+  geom_bar(fill=I('#099DD9')) +
+  theme(axis.text.x = element_text(angle = 60, vjust = 0.6)) +
+  xlab("Score")+
+  ylab("Number of Loans")+
+  ggtitle("Prosper Score Distribution")+
+  scale_x_continuous(breaks=seq(0,11,1))
+```
+
+Here we can see a normal distribution chart if we did not count NA. It looks like most loans are under 4-8 score ranges.
+
+```{r echo=FALSE}
+#2.Distribution of loan ranking.
+summary(P2P$ProsperRating..Alpha.)
+P2P$ProsperRating..Alpha.<-ordered(P2P$ProsperRating..Alpha.,levels=c('AA','A','B','C','D','E','HR',' '))
+ggplot(data = subset(P2P, !is.na(ProsperRating..Alpha.)), aes(x=ProsperRating..Alpha.)) + 
+  geom_bar(color=I('black'),fill=I('#099DD9')) +
+  theme(axis.text.x = element_text(angle = 60, vjust = 0.6)) +
+  xlab("Prosper Ranking")+
+  ylab("Number of Loans")+
+  ggtitle("Prosper Ranking Distribution")
+```
+
+From the chart above, the majority of loan are being rated as "A","B","c" and "D".
+
+```{r echo=FALSE}
+#3.IncomeRange
+P2P$IncomeRange<-ordered(P2P$IncomeRange,levels=c('$0','$1-24,999','$25,000-49,999','$50,000-74,999','$75,000-99,999','$100,000+',
+                                                  'Not employed','Not displayed'))
+summary(P2P$IncomeRange)
+ggplot(data = P2P, aes(x=P2P$IncomeRange)) + 
+  geom_bar(fill=I('#f79420')) +
+  theme(axis.text.x =element_text(angle=45,vjust=0.6))+
+  xlab("Income Range")+
+  ylab("Number of Loans")+
+  ggtitle("Prosper IncomeRange Distribution")
+```
+
+People from income range 25,000-49,999 and 50,000-74,999 are the main borrower.However, people with income under 25000 are not major borrower. So, probably Prosper.com has some income limits on borrowers or Prosper.com main target are future home-owners or car-owners, but not for student loan.
+ 
+```{r echo=FALSE}
+#4.Borrower's Listing Category
+
+x <- c('Debt Consolidation', 
+                                'Home Improvement','Business', 
+                                 'Personal Loan', 
+                                 'Student Use', 
+                                 'Auto', 
+                                 'Baby & Adoption',
+                                 'Boat', 
+                                 'Cosmetic Procedure', 
+                                 'Engagement Ring', 
+                                 'Green Loans', 
+                                 'Household Expenses', 
+                                 'Large Purchases', 
+                                 'Medical/Dental', 
+                                 'Motorcycle', 'RV',
+                                 'Taxes', 'Vacation',
+                                 'Wedding Loans', 
+                                 'Other', 
+                                 'Not Available')
+P2P$ListingCategory <- factor(P2P$ListingCategory..numeric., 
+                                  levels = c(1:6,8:20,7,0), labels = x)
+ggplot(data = P2P, aes(x=P2P$ListingCategory)) + 
+  geom_bar(fill=I('#f79420')) +
+  theme(axis.text.x =element_text(angle=60,vjust=0.6))+
+  xlab("Listing Catagory")+
+  ylab("Number of Loans")+
+  ggtitle("Prosper Purpose of loan Distribution")
+summary(P2P$ListingCategory)
+
+```
+
+From this chart, we could see most people want money for debit consolidation, home improvement and business. Debit consolidation has a surprising amount which almost 50% of total number of loans. These data shows that most borrower already have their first job and is looking to pay their debt.
+
+```{r echo=FALSE}
+#5.Loan status
+summary(P2P$LoanStatus)
+ggplot(data = P2P, aes(x=P2P$LoanStatus)) + 
+  geom_bar(fill=I('#f79420')) +
+  theme(axis.text.x =element_text(angle=45,vjust=0.6))+
+  xlab("Loan Status")+
+  ylab("Number of Loans")+
+  ggtitle("Prosper Loan Status Distribution")
+```
+
+Here we can see that more than 50% of loans are under active status and almost 38% are complete. However, more than 10%loans are defaulted or past due, which probably will reduce the company revenue.
+
+```{r echo=FALSE}
+#6.Borrower State
+summary(P2P$BorrowerState)
+ggplot(data = P2P, aes(x=P2P$BorrowerState)) + 
+  geom_bar(fill=I('#099DD9')) +
+  theme(axis.text.x =element_text(size=7,angle=45,vjust=0.9))+
+  xlab("Borrower State")+
+  ylab("Number of Loans")+
+  ggtitle("Prosper Borrower State Distribution")
+```
+
+From this chart, we could see the top borrower is from "CA", which is almost 15,000 borrowers. Other popular states are "FL","IL","NY" and "TX".
+
+```{r echo=FALSE}
+#7.Borrower's employee status
+P2P$EmploymentStatus=factor(P2P$EmploymentStatus,
+                            levels = c("Employed","Full-time",
+                                       "Part-time","Self-employed",
+                                       "Retired","Not available",
+                                       "Not employed","others"," "))
+summary(P2P$EmploymentStatus)
+ggplot(data = subset(P2P, !is.na(EmploymentStatus)),  aes(x=EmploymentStatus)) + 
+  geom_bar(fill=("blue"))+
+  theme(axis.text.x =element_text(angle=30,vjust=0.6))+
+  xlab("Employee Status")+
+  ylab("Number of Loans")+
+  ggtitle("Prosper Borrower State Distribution")
+```
+
+Most borrowers are employed or had a full-time job. Surprisingly, there're few part-time job borrowers. Probabaly because part-time job is not stable or do not have enough income to pay back the loan.
+
+```{r echo=FALSE}
+#8.Debt to income ratio
+summary(P2P$DebtToIncomeRatio)
+ggplot(data = P2P, aes(x=P2P$DebtToIncomeRatio)) + 
+  geom_histogram() +
+  xlim(0,1)+
+  ggtitle("Prosper Debt to Income ratio Distribution")+
+  xlab("Debt To Income Ratio")+
+  ylab("Number of Loans")
+```
+
+Most borrower's debt to income ratio is between 0-0.6. The peak is around 0.23. However, there're still some borrower's ratio is above 0.75.
+
+```{r echo=FALSE}
+#9.Occupation
+summary(P2P$Occupation)
+qplot(x=Occupation,data=P2P,color=I('black'),fill=I('#099DD9'))+
+theme(axis.text.x = element_text(size=8,angle = 90, vjust = 0.5, hjust=1))+
+  ylab("Number of Loans")
+```
+
+Here we can see borrowers are from all over of different industry. There are also many people choose "Other" or "professional" not sepcifying their occupation.
+
+```{r echo=FALSE}
+#10.CreditScore of Borrowers
+#There are upper credit score and lower credit score in dataset. So, we will use the mean of these two numbers to do reserch.
+P2P$creditscore <- (P2P$CreditScoreRangeLower+P2P$CreditScoreRangeUpper)/2
+summary(P2P$creditscore)
+ggplot(data = P2P, aes(x=P2P$creditscore)) + 
+  geom_histogram(binwidth = 25,fill=I('#099DD9')) +
+  xlim(450,890)+
+  ggtitle("Prosper credit score of borrower Distribution")+
+  ylab("Number of Borrowers")+
+  xlab("Credit Score")
+```
+
+Here we could see a normal distribution chart. The main average of credit score from borrowers are around 700. Most borrowers are from 600-800.
+
+```{r echo=FALSE}
+#11.Delinquencies history for last 7 years
+summary(P2P$DelinquenciesLast7Years)
+p1=ggplot(data = P2P, aes(x=P2P$DelinquenciesLast7Years)) + 
+  geom_histogram(binwidth = 1,fill=I('#099DD9')) +
+  ggtitle("Prosper Delinquencies history Distribution")+
+  ylab("Number of Borrowers")+
+  xlab("Delinquencies in last 7 Years")
+
+p2=ggplot(data = P2P, aes(x=log10(P2P$DelinquenciesLast7Years)))+ 
+  geom_histogram(fill=I('#099DD9')) +
+  ggtitle("Prosper Delinquencies history Distribution")+
+  ylab("Number of Borrowers")
+
+grid.arrange(p1,p2,ncol=1)
+```
+
+Here we could see a positive skewed chart and a log transformation chart. Most people do not have delinquency record. And people with few delinquency record can still get the loan. 
+
+```{r echo=FALSE}
+#12.Loan amount
+summary(P2P$LoanOriginalAmount)
+ggplot(data = P2P, aes(x=P2P$LoanOriginalAmount)) + 
+  geom_histogram(binwidth = 1000,fill="blue") +
+  ggtitle("Prosper Loan Amount Distribution")+
+  ylab("Number of Borrowers")+
+  xlab("Loan Amount")
+```
+
+Here we can see main loan amount are $4000,$10000 and $15000. And minimum loan amount is $1000.
+
+```{r echo=FALSE}
+#13.Term
+summary(P2P$Term)
+ggplot(data = P2P, aes(x=as.factor(Term))) + 
+  geom_bar(fill=I('#099DD9')) +
+  ggtitle("Prosper Term Distribution")+
+  ylab("Number of Borrowers")+
+  xlab("Term")
+```
+
+Based on chart and summary, we could see most people choose 36 months, then 60 months and last 12 months. 36 months loan is more than tirple of 60 months loan.
+
+```{r echo=FALSE}
+#14.Monthly Loan Payment
+summary(P2P$MonthlyLoanPayment)
+ggplot(data = P2P, aes(x=P2P$MonthlyLoanPayment)) + 
+  geom_histogram(binwidth=50,fill=I('#099DD9')) +
+  ggtitle("Prosper Monthly Loan Payments Distribution")+
+  ylab("Number of Borrowers")+
+  xlab("Monthly Loan Payments")
+```
+
+From this chart, we could see most borrower's monthly loan payments are between $0-$500. Mean and median monthly loan payment is $272.50 and $217.70. 
+
+```{r echo=FALSE}
+#15.IF borrower homeowner
+summary(P2P$IsBorrowerHomeowner)
+ggplot(data = P2P, aes(x=P2P$IsBorrowerHomeowner)) + 
+  geom_bar(fill=I('#099DD9')) +
+  ggtitle("Prosper if borrower homeowner Distribution")+
+  xlab("If Borrower Is Home Owner")+
+  ylab("Number of Loans")
+```
+
+Here we could see almost half of borrower are homeowners and other half are not.
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+The dataset has 87 variables and 113937 oberservations.And the loans cover the period from 2005 to 2014. The dataset contains classes int,numeric,data and factor.
+
+### What is/are the main feature(s) of interest in your dataset?
+My main features of interest are:
+1.Borrower rate. I am interested to know the relationship between borrower rate and other variables relationship. What factors will mostly affect borrower rate? Like prosper score,income range, loan amount etc.
+2.Number of investors. I am interested to know which loans are more attractive for investing. What are the main characteristics of those loans?
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+Other features could be creidt score, debt to income ratio, prosper rating, occupation and employment status.
+
+### Did you create any new variables from existing variables in the dataset?
+No, I did not
+
+### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
+DUring my investigation, I find some unusuual distributions. When I do income range and job research, I find income lower than $25000 and part-time job borrowers are not main borrowers. I'm wodering if prosper set up any income limits for borrowers. 
+I did not perform any operations on the data.
+
+# Bivariate Plots Section
+```{r echo=FALSE}
+#1. The relationship between BorrowRate and Prosper Rating:
+by(P2P$BorrowerRate,P2P$ProsperRating..Alpha.,summary)
+ggplot(data = subset(P2P, !is.na(ProsperRating..Alpha.)), 
+       aes(x = ProsperRating..Alpha., y = BorrowerRate)) +
+        geom_boxplot() +
+        xlab("Prosper Rating") +
+        ggtitle("Borrower Rate for Different Prosper Rating")
+```
+
+From this chart, we could see the reversed relationship between borrower rate and prosper rating. The higher prosper rating, the lower borrower rate.
+
+```{r echo=FALSE}
+#2. The relationship between BorrowRate and Income Range:
+ggplot(data = P2P, aes(x = IncomeRange, y = BorrowerRate)) +
+        geom_boxplot() +
+        theme(axis.text.x =element_text(angle=30,vjust=0.6))+
+        xlab("Income Range") +
+        ggtitle("Borrower Rate for Different Income Range")
+```
+
+It looks like borrower with higher income will get lower borrower rate.
+
+```{r echo=FALSE}
+#3. The relationship between BorrowRate and Borrower State:
+ggplot(data = P2P, aes(x = BorrowerState, y = BorrowerRate)) +
+        geom_boxplot() +
+        theme(axis.text.x =element_text(size=9,angle=60,vjust=0.6))+
+        xlab("Income Range") +
+        ggtitle("Borrower Rate for Different Borrower State")
+```
+
+From this chart, we could see borrower rate has not a strong relationship with borrower state.
+
+```{r echo=FALSE}
+#4. The relationship between BorrowRate and Borrower credit score:
+P2P$creditscoregroup<- cut(P2P$creditscore,
+                           c(0,300,600,900))
+table(P2P$creditscoregroup)
+ggplot(aes(x=creditscoregroup,y=BorrowerRate),
+data =subset(P2P, !is.na(creditscore)))+
+geom_boxplot()
+
+
+ggplot(data =subset(P2P, !is.na(creditscore)), 
+aes(x = creditscore, y = BorrowerRate)) +
+geom_point(alpha=1/20) +
+theme(axis.text.x =element_text(size=9,angle=60,vjust=0.6))+
+xlab("Borrow Creditscore") +
+ggtitle("Borrower Rate for Different Borrower Credit Score")+
+xlim(450,830)
+```
+
+Here we use two charts to explore the realtionship between borrower credit score and borrower rate. From first chart, we could see the relationship between different credit score group and borrower rate. Borrower with 600-900 credit score has lowest borrower rate, which average is arount 0.18. From second chart, we could see a scotter plot chart with borrower's credit score 500 or above. We could clearly see that the higher credit score, the lower borrower rate.
+
+```{r echo=FALSE}
+#5. The relationship between Borrow Amount and Employment status:
+ggplot(aes(x = EmploymentStatus, y = LoanOriginalAmount), data = na.omit(P2P)) +
+                        geom_boxplot() +
+                        scale_y_continuous(limits = c(0,15000)) +
+                        theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+Employed and retired borrower seems to have higher loan amount than part-time.
+
+```{r echo=FALSE}
+#6. The relationship between Prosper Score and Investors:
+ggplot(aes(x = as.factor(ProsperScore), y = Investors), 
+       data = subset(P2P,!is.na(ProsperScore))) + 
+  geom_boxplot() +
+  ggtitle("Prosper Score vs Number of Investors") +
+  xlab("Prosper Score")
+```
+
+From the chart, we could see the higher the Prosper Score, the more investors. The peak is prosper socre equeal to 10.
+
+```{r echo=FALSE}
+#7. The relationship between Propser Amount and Investors:
+ggplot(aes(x = LoanOriginalAmount, y = Investors), data = P2P) + 
+geom_jitter(alpha=1/40,color='orange') +
+geom_smooth(method = "lm") +
+ggtitle("Prosper loans vs Number of Investors") +
+xlab("Prosper loans Amount")
+```
+
+Here we could see that the higher loans amount, the more investors.
+
+```{r echo=FALSE}
+#8. The relationship between Estimated Loss and Investors:
+ggplot(aes(x = P2P$EstimatedLoss, y = Investors), 
+       data = P2P) + 
+  geom_jitter(alpha=1/50,color='orange') +
+  theme(axis.text.x =element_text(size=7,angle=90,vjust=0.6))+
+  ggtitle("Estimated Loss vs Number of Investors") +
+  xlab("Estimated Loss")+
+  ylab("Number of Investors")
+```
+
+We can found the lower the estmated loss, the more investors.
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+1.Borrow Rate: There's reversed relationship between borrower rate and prosper rating. The higher prosper rating, the lower borrower rate. And borrower with higher income will get lower borrower rate. The higher credit score, the lower borrower rate. Employed and retired borrower seems to have higher loan amount than part-time. 
+2.Investors: We can find the higher the Prosper Score, the more investors. The peak is prosper socre equeal to 10. We also could see that the higher loans amount, the more investors. We can found the lower the estmated loss, the more investors.
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+
+No
+
+### What was the strongest relationship you found?
+
+The reverse relationship between borrower rate and prosper rating.
+
+# Multivariate Plots Section
+
+```{r echo=FALSE}
+#1.Borrow Rate/Loan Amount/Prosper Rating
+ggplot(aes(x=BorrowerRate, y = LoanOriginalAmount, color = ProsperRating..Alpha.), 
+    data = subset(P2P, !is.na(ProsperRating..Alpha.))) +
+geom_point(alpha = 1/20) +
+geom_smooth(method = "lm") +
+scale_color_brewer(palette = "Blues") +
+ggtitle("Borrower Rate vs. Loan Amount vs.by Prosper Ratings") +
+ylab("Loan Amount") +
+xlab("Borrower Rate") +
+ylim(0, 35000)
+```
+
+```{r echo=FALSE}
+#2. Borrow Rate/Borrower State/Prosper Rating
+ggplot(aes(x= BorrowerState, y=BorrowerRate,color=ProsperRating..Alpha.), 
+    data = subset(P2P, !is.na(ProsperRating..Alpha.))) +
+    geom_point() +
+  theme(axis.text.x =element_text(size=7,angle=60,vjust=0.6))+
+  scale_color_brewer(palette = "Blues") +
+  xlab("Borrower State")+
+  ylab("Borrower Rate")+
+  ggtitle("Borrower State vs. Borrower Rate vs.by Prosper Ratings")
+```
+
+Each state is almost same, but still the lower the prosper rating, the higher borrower rate.
+
+```{r echo=FALSE}
+#3. Investors/Loan Amount/Prosper Rating
+ggplot(aes(x=Investors, y=LoanOriginalAmount,color=ProsperRating..Alpha.), 
+    data = subset(P2P, !is.na(ProsperRating..Alpha.))) +
+    geom_point(size=1,position='jitter') +
+  scale_color_brewer(palette = "Blues") +
+  xlab("Loan Amount")+
+  ylab("Number of Investors")+
+  ggtitle("Number of Investors vs. Loan Amount vs. by Prosper Ratings")
+```
+
+From this chart, we could see the relationship between Investors, loan amount and prosper ratings. The higher the prosper ratings, there will be more investors. However, most investors are interested in loan amount less than $30,000. $10,000 to $20,000 are most popular investor's choice no matter what rating.
+
+```{r echo=FALSE}
+#4. Investors/Estimated Loss/Prosper Rating
+ggplot(aes(x= EstimatedLoss, y=Investors,color=ProsperRating..Alpha.), 
+    data=subset(P2P,!is.na(ProsperRating..Alpha.))) +
+    geom_point() +
+  scale_color_brewer(palette = "Greens") +
+  xlab("Estimated Loss")+
+  ylab("Number of Investors")+
+  ggtitle("Number of Investors vs. Estimated Loss vs. by Prosper Ratings")
+```
+
+The higher the prosper rating, the lower the estimated loss, the more the number of investors.
+
+```{r echo=FALSE}
+#5. Borrower Rate/Ratings/Credit Score
+ggplot(aes(x=creditscore,y=BorrowerRate, color=ProsperRating..Alpha.),
+       data = subset(P2P, !is.na(ProsperRating..Alpha.)))+
+ geom_line(stat = "summary", fun.y=mean)+
+  scale_color_brewer(palette = "Reds") +
+  
+ labs(x="Credit Score",y="Average Borrower Rate",
+      title="Borrower Rate vs. Ratings vs. Credit Score ")+
+  scale_x_continuous(limit=c(600,850))
+```
+
+This chart summrize the relationship between borrower rate, rating and borrower credit score. We can see loans with high rating usually require higher credit score.
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+Prosper rating and investors are strong correlated. Here we can see prosper rating, investors, loan amount and estimated loss are affecting each other.
+
+### Were there any interesting or surprising interactions between features?
+
+There were interesting interactions between prosper rating, loan amount and number of investors. It looks like up to $25,000, higher loan amount means more investors, but when it comes above $25,000, there were only few investors.
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
+
+No
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+#1. Borrow Rate/Loan Amount/Prosper Rating
+ggplot(aes(x=BorrowerRate, y = LoanOriginalAmount, color = ProsperRating..Alpha.), 
+    data = subset(P2P, !is.na(ProsperRating..Alpha.))) +
+geom_point(alpha = 1/20) +
+geom_smooth(method = "lm") +
+scale_color_brewer(palette = "Blues") +
+ggtitle("Borrower Rate vs. Loan Amount vs.by Prosper Ratings") +
+ylab("Loan Amount") +
+xlab("Borrower Rate") +
+ylim(0, 35000)
+```
+
+### Description One
+
+This chart basically summarize the realtionship betwwen borrower rate, loan amount and prosper ratings. We can clearly see that high rating loans usually got low borrower rate. And some large loan amount (more than $25,000) are only available for high rating loans. And we also can see loans with higher borrower rate and lower rating usually has small loan amount.
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+#2. Investors/Loan Amount/Prosper Rating
+ggplot(aes(x=Investors, y=LoanOriginalAmount,color=ProsperRating..Alpha.), 
+    data = subset(P2P, !is.na(ProsperRating..Alpha.))) +
+    geom_point(alpha=0.5,size=1,position='jitter') +
+  scale_color_brewer(palette = "Blues") +
+  geom_smooth(method="glm") +
+  xlab("Loan Amount")+
+  ylab("Number of Investors")+
+  ggtitle("Number of Investors vs. Loan Amount vs. by Prosper Ratings")
+```
+
+### Description Two
+
+This chart summrize the relationship between number of investors, loan amount and prosper ratings. We can see most investors are interested in investing loan amount less than $25,000. For loans above $25,000, investors are Only interested in high rating loans, like "A" or "AA". When investors was interested on low rating loans, they only invest loans with smaller loan amount(less than $15,000). Probaly they are worried about risk with large loan amount.
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+#3.Borrower Rate/Rating/Credit Score
+ggplot(aes(x=creditscore,y=BorrowerRate, color=ProsperRating..Alpha.),
+       data = subset(P2P, !is.na(ProsperRating..Alpha.)))+
+ geom_line(stat = "summary", fun.y=mean)+
+  scale_color_brewer(palette = "Reds") +
+ labs(x="Credit Score",y="Average Borrower Rate",
+      title="Borrower rate vs. Rating & Credit Score ")+
+  scale_x_continuous(limit=c(600,850))
+```
+
+### Description Three
+
+This chart summrize the relationship between borrower rate, rating and borrower credit score. We can see loans with high rating usually require higher credit score. "AA" rating loans require borrower's to have almost 700 credit score in order to qualify to apply. And other rating loan's minimum credit score start from 600. We also can see higher rating loans are always with lower borrower rate.
+
+------
+
+# Reflection
+I used to be an Investment Consultant for more than 6 years, so I had some general ideas about loans and investments. So I choose this database as my research topic.  After I reviewed the dataset, I was interested to find the relationship between loan rating, borrower rate and number of investors. I wanted to learn more about P2P company and see what factors will affect investors to make their decisions.
+
+I was new to computer system. So at the beginning, I was struggling with ggplot2 syntax. After lots of practise, reserching, reading and learning on Google, I gradually become comfortable with ggplot2 sytax. Before I did this project, I did not learn deeply about P2P company like Prosper.com. But, this topic was quite interesting to me and related to my previous job. I also checked Prosper.com to see the meaning of each column and how they operate their business. I also took time to read database and wanted to find most related factors. 
+
+Then I imported the databased and used the ggplot2 to see the correlation with each factors and variables. After I did two variable comprison and three variable comprison, I finlly find the relationship between borrower rate, number of investors, ratings, creidt socre and loan amount. I think these are important factors which will most affect the profit of the loan.
+
+After I finished my project, I got some future ideas about this database.When I do the quick reserch, I realized that there was a global financial crisis in 2008, but it was not obvious on these database. So if I will continue to do future work on this dataset, I will split the timeframe between 2004-2009 and 2009-2014 to see if there was any financial pressure or effects on number of borrowers, borrower rate and number of investors.
