@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+  <style>
+    h1 {
+      text-align:center;
+    }  
+    h3 {
+      text-align:center;
+    }  
+  </style>
+    <script type="text/javascript">
+      function draw(data) {
+      
+      /*
+        D3.js setup code
+      */
+
+          "use strict";
+          var margin = 75,
+              width = 1400 - margin,
+              height = 600 - margin;
+
+          d3.select('body').append('h1').text("Prosper Loan Data");
+          d3.select('body').append('h3').text("Prosper is a P2P marketplace providing person-to-person lending utilizing alisting and bidding process to get competitive rates for loans. The dataset has 87 variables and 113937 oberservations.And the loans cover the period from 2005 to 2014. The dataset contains classes int,numeric,data and factor. We will explore the relationship between different main Variables.")
+          
+
+
+
+
+          d3.select('body').append('h3').text("LoanRating vs. LoanAmount vs. Number of Investors vs. Loan Term");
+
+
+          var svg = d3.select("body")
+            .append("svg")
+              .attr("width", width + margin)
+              .attr("height", height + margin)
+            .append('g')
+                .attr('class','chart');
+
+
+      /*
+        Dimple.js Chart construction code
+      */
+
+          var myChart = new dimple.chart(svg, data);
+          var x = myChart.addCategoryAxis("x", "ProsperRating (Alpha)");
+          x.addOrderRule(["AA","A","B","C","D","E","HR"]);
+          myChart.addMeasureAxis("y", "LoanOriginalAmount");
+          myChart.addMeasureAxis("z","Investors");
+          myChart.addSeries(["Term"], dimple.plot.bubble);
+          myChart.addLegend(700, 10, 510, 20, "right");
+          myChart.draw();
+        };
+      </script>
+  </head>
+<body>
+  <script type="text/javascript">
+  /*
+    Use D3 (not dimple.js) to load the TSV file
+    and pass the contents of it to the draw function
+    */
+  d3.csv("prosperLoanData.csv", draw);
+  </script>
+</body>
+</html>
