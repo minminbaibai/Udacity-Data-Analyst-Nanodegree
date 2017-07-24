@@ -52,9 +52,4 @@ Final rendition of the data visualization is shown below:
 
 - [dimple.js Documentation](http://dimplejs.org/)
 - [Data Visualization and D3.js (Udacity)](https://www.udacity.com/course/viewer#!/c-ud507-nd)
-- [mbostock's blocks](http://bl.ocks.org/mbostock)
-- [Dimple homepage](http://dimplejs.org/examples_viewer.html?id=bars_vertical_grouped)
 
-### Data
-
-- `train.csv`: original downloaded dataset with minor cleaning for dimple.js implementation.
