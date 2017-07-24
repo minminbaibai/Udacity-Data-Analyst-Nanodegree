@@ -5,7 +5,7 @@ by Min Lu
 
 Prosper is a P2P marketplace providing person-to-person lending utilizing alisting and bidding process to get competitive rates for loans. The dataset has 88 variables and 84854 oberservations.And the loans cover the period from 2009 to 2014. The dataset contains classes int,numeric,data and factor. We will explore the relationship between different main Variables. This project contains a bar chart with three most variables LoanRating vs. LoanAmount vs. Loan Term vs. Different Years. We can choose different years to get more detail information for each year and see how these numbers changed from time to time.
 
-### Design
+## Design
 
 #### Exploratory Data Analysis and Cleaning (R)
 
@@ -15,23 +15,23 @@ I downloaded the data from [ProsperLoanData](https://s3.amazonaws.com/udacity-ho
 
 I decided to use **d3.js** and **dimple.js** together to complete my data visualization.
 
-I considered using mutiple chart types, like scatter chart, line chart, bubble chart, bar chart,etc. I also thought about color to separately each variables to test how to arange to show the best numbers and visualization on one chart. I first chose bubble chart. I selected loan ratings, loan amount, number of investors and loan term to make my first chart. Here's a link for my first chart [Index1](https://github.com/minminbaibai/Udacity-Data-Analyst-Nanodegree/blob/master/P6%20--%20Data%20Visualization/basic_charts/index1.html).
+I considered using mutiple chart types, like scatter chart, line chart, bubble chart, bar chart,etc. I also thought about color to separately each variables to test how to arange to show the best numbers and visualization on one chart. I first chose bubble chart. I selected loan ratings, loan amount, number of investors and loan term to make my first chart. Here's a link for my first chart [Index1](https://github.com/minminbaibai/Udacity-Data-Analyst-Nanodegree/blob/master/P6%20--%20Data%20Visualization/basic_charts/index1.html). After I viewed my chart few times, I think I can make a better one. And I am interested to add Years to this chart. Next day, I invited three friends to my home and showed them my chart. I asked for some feedback.
 
 ### Feedback
 
-I gathered feedback from 3 different people people and tried to follow Udacity questions guideline and here is the abridged responses. 
+Here are three feedbacks:
 
 #### Interview #1
 
-> Your chart was a bit messy & no clear headlines & legend. If there is some explanation like a bold headline then these charts would make sense. The insights is not so much of a surprise and if you just create a small tweak in the legend, x-axis & y-axis then this would looks good. The data clearly favors your initial hypothesis, women children & elders are prioritized to board the baot first. 
+> Your chart was nice, but too simple. If there are more explanation about these variables, it will looks better. You used size of bubble to show number of investors in different loan rating, but it's not easy to tell the diffence of the size since there are too many simiplar bubble.
 
 #### Interview #2
 
-> The chart is interactive, that's nice. But why the second chart is revert and not in-line with the other chart. Switch x-axis & y-axis with each other and I think the chart will looks much better. By the way, the first chart to split between classes is cool but I think you can make it even better by combining gender & classes to see if there's different behavior in different classes. Broadly speaking, the chart looks intuitive & only needs a few small tweak. 
+> The chart is interactive, that's nice. But why some bubble are extrmely small on the bottom of chart. I suggest you change variable arrangements or chart type which can better show the relationship and figures in these varaiables. How about try bar chart?
 
 #### Interview #3
 
-> The second chart looks a bit weird and too much junk information, there's no need to include different age in different age bracket like that. There's not much information to show. And for the first chart, split the column into two, a stacked-bar wouldn't be necessary. Also, you also needs to clean up the headline & make clear of the axis, what is PClass? Can you makes it a bit clearer. Overall, this chart is straightforward.
+> I agreed that chart is a little bit too simple. How about add another variable like Years and do an animation? I will also consider change the chart type since some 12 months term bubbles are too small on the bottom of chart.
 
 ### Post-feedback Design
 
