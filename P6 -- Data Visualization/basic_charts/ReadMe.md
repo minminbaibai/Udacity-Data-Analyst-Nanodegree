@@ -15,13 +15,7 @@ I downloaded the data from [ProsperLoanData](https://s3.amazonaws.com/udacity-ho
 
 I decided to use **d3.js** and **dimple.js** together to complete my data visualization.
 
-I considered using mutiple chart types, like scatter chart, line chart, bubble chart, bar chart,etc. I also thought about color to separately each variables to test how to arange to show the best numbers and visualization on one chart. I first chose bubble chart. I selected loan ratings, loan amount, number of investors and loan term to make my first chart.
-
-I considered using multiple chart types (scatter, line chart, bubble chart, bar chart, etc.), color each line separately to test if this is a good way to visualize & stress on important point. I re-evaluated different chart type by tweaking few line of code and confirm my initial assumption, a bar chart is already sufficient to dislay data characteristic. Then, I also use Excel to do basic data munging (mute the blank age by inputing N/A), created new column called age group and divided into "15 age" bracket. The first versio is drawn from `index-initial.html` or image below:
-
-This initial iteration can be viewed at `index-initial.html`, or below:
-
-![First Chart](https://raw.githubusercontent.com/tommyly2010/Udacity-Data-Analyst-Nanodegree/master/p6 - Data Visualization/img/image-initial.png)
+I considered using mutiple chart types, like scatter chart, line chart, bubble chart, bar chart,etc. I also thought about color to separately each variables to test how to arange to show the best numbers and visualization on one chart. I first chose bubble chart. I selected loan ratings, loan amount, number of investors and loan term to make my first chart. Here's a link for my first chart![First Chart](https://raw.githubusercontent.com/tommyly2010/Udacity-Data-Analyst-Nanodegree/master/p6 - Data Visualization/img/image-initial.png)
 
 ### Feedback
 
