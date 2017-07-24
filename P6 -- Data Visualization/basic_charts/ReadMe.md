@@ -37,16 +37,12 @@ Here are three feedbacks:
 
 Following the feedback from the 3 interviews, I implemented the following changes:
 
-- I separate man & women from the first chart.
-- I added careful chart title & clearly labeled axis title.
-- I flipped the chart from horizontal bar chart to vertical bart chart.
-- I remove the individual age & only shows aggergrate age group.
-- I intended to add few special effect (highlight a chart when mouseover) but this would not be necessary.
-- I switched from Number of Survival to Survival Rates since the amount of passengers in each class/ages group is not similar.
+- I deleted number of investors variable and add Years variable
+- I added animation with Years.
+- I changed chart type from bubble chart to bar chart.
+- I added legend to better explained my chart.
 
-Final rendition of the data visualization is shown below:
-
-![Final Chart](https://raw.githubusercontent.com/tommyly2010/Udacity-Data-Analyst-Nanodegree/master/p6 - Data Visualization/img/image-final.png)
+My final Edition of Data Visualization [Index_final](https://github.com/minminbaibai/Udacity-Data-Analyst-Nanodegree/blob/master/P6%20--%20Data%20Visualization/basic_charts/index_final.html)
 
 ### Resources
 
