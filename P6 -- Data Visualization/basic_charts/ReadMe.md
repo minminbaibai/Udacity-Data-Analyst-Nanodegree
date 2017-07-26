@@ -44,6 +44,9 @@ Following the feedback from the 3 interviews, I implemented the following change
 
 My final Edition of Data Visualization [Index_final](https://github.com/minminbaibai/Udacity-Data-Analyst-Nanodegree/blob/master/P6%20--%20Data%20Visualization/basic_charts/index_final.html)
 
+### Outcome
+From this chart, we could see that loans with rating A, B, C always has a higher demand, almost doubled other ratings. And loans with terms 36 months and 60 months are more popular than loans with 12 months.
+
 ### Resources
 
 - [dimple.js Documentation](http://dimplejs.org/)
