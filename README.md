@@ -9,7 +9,7 @@ This repository contains project work for Udacity's [Data Analyst Nanodegree](ht
 - **Project 4** - Explore and Summarize Data for P2P Lending Prosper Loan
 - **Project 5** - Identifying Fraud from Enron Email & Financial Dataset
 - **Project 6** - Make Effective Data Visualization for Titanic Dataset
-- **Project 7** - Min Lu Resume
+- **Project 8** - Min Lu Resume
 
 ### Courses:
 - Intro to Data Science
