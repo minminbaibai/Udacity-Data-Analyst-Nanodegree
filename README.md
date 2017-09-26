@@ -14,6 +14,7 @@ This repository contains project work for Udacity's [Data Analyst Nanodegree](ht
 
 ### Courses:
 - Intro to Data Science
+- Statistics
 - Data Wrangling with SQL
 - Data Analysis with R
 - Intro to Machine Learning
