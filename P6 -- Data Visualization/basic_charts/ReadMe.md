@@ -1,5 +1,5 @@
 # P6--Data Visualization: Prospor Loan Data Visualization
-by Min Lu
+### by Min Lu
 
 ### Summary
 
