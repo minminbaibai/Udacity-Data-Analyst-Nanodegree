@@ -11,6 +11,7 @@ This repository contains project work for Udacity's [Data Analyst Nanodegree](ht
 - **Project 6** - Make Effective Data Visualization for Titanic Dataset
 - **Project 7** - Technical Interview Questions
 - **Project 8** - Min Lu Resume
+- **Project 9** - Min Lu Data Analyst Graduation Certificate
 
 ### Courses:
 - Intro to Data Science
